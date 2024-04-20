@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<Windows.h>
 #include<WinSock2.h>
 
 #define SERVER_ADDRESS "127.0.0.1"
@@ -15,9 +16,8 @@ void SOCK_FlCleanUp(char* err){
 int main(int argc, char* argv[]){
     WORD WSA_vRequested = MAKEWORD(2,2);
     WSADATA WSAData;
-    short port_no = 443;
-
-    // startup 
+    short port_no = 9090;
+    
     if(WSAStartup(WSA_vRequested,&WSAData) != 0){
         SOCK_FlCleanUp("WSA Startup failed");
         return 1;
