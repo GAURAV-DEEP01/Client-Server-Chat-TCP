@@ -1,15 +1,10 @@
+#include "../util/include/concurrency.h"
 #include<stdio.h>
 #include<stdlib.h>
 #include<WinSock2.h>
 
 #define SERVER_ADDRESS "127.0.0.1"
 #define BUFFER_SIZE 1000
-
-void SOCK_FlCleanUp(char* err){
-    fprintf(stderr,"\nError : %s\nErrCode : %d\n",err, WSAGetLastError());
-    WSACleanup();
-    return;
-}
 
 
 int main(int argc, char* argv[]){
@@ -34,7 +29,7 @@ int main(int argc, char* argv[]){
     fprintf(stdout, "Socket creation Successfull...\n"); 
 
 
-    // setting up sever port and address family for binding 
+    // setting up sever port ,address family and addr  
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_port = htons(port_no);
@@ -51,7 +46,6 @@ int main(int argc, char* argv[]){
 
      
     // listening..
-    
     if(listen(socket_fh, 5) < 0){
         SOCK_FlCleanUp("Failed to listen!");
         closesocket(socket_fh);
@@ -67,35 +61,31 @@ int main(int argc, char* argv[]){
         closesocket(socket_fh);
         return 1;
     }
-    char buffer[BUFFER_SIZE] = {0};
-    do{
-        memset(buffer, 0, sizeof(buffer));
-        size_t bytes_read;
-        if((bytes_read  = recv(new_socket_fh, buffer, sizeof(buffer),0)) < 0 ){
-            SOCK_FlCleanUp("Unable to revieve data!");
-            closesocket(new_socket_fh);
-            return 1;
-        }else if(bytes_read == 0){
-            fprintf(stdout,"Connection closed by Client\n");
-            closesocket(new_socket_fh);
-        }else{
-            fprintf(stdout, "Client Message: %s\n",buffer);
-        }
 
-        // sending
-        memset(buffer, 0, sizeof(buffer));
-        printf("Server: ");
-        fgets(buffer, sizeof(buffer), stdin);
-        size_t bytes_sent;
-        if(bytes_sent = send(new_socket_fh, buffer, strlen(buffer), 0) < 0){
-            SOCK_FlCleanUp("Unable to send data!");
-            closesocket(new_socket_fh);
-            return 1;
-        }
+    HANDLE senderThread, receiverThread;
+    DWORD senderThreadID, receiverThreadId;
 
-    }while(1);
+    senderThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SOCKTH_send, (LPVOID)new_socket_fh, 0, &senderThreadID);
+    if(!senderThread){
+        fprintf(stderr, "Sender thread Failed!\n");
+        WSACleanup();
+        closesocket(socket_fh);
+        return 1;
+    }
+    fprintf(stdout, "Sender threadID : %X\n", senderThreadID);
 
+    receiverThread = CreateThread(NULL, 0 , (LPTHREAD_START_ROUTINE)SOCKTH_receive, (LPVOID)new_socket_fh, 0, &receiverThreadId);
+    if(!receiverThread){
+        fprintf(stderr, "Receiver thread Failed!\n");
+        WSACleanup();
+        closesocket(socket_fh);
+        return 1;
+    }
+    fprintf(stdout, "Receiver threadID : %X\n", receiverThreadId);
     
+    WaitForSingleObject(senderThread, INFINITE);
+    WaitForSingleObject(receiverThread, INFINITE);
+
     closesocket(socket_fh);
     WSACleanup();
 }

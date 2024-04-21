@@ -8,12 +8,15 @@
 
 #define BUFFER_SIZE 1000
 
-// not integrated to client-server until completion 
+// integrating...
 
+// socket error status & makes WSA cleanup 
 extern void SOCK_FlCleanUp(char* err);
 
-extern DWORD WINAPI SOCKTH_revieve(SOCKET socket_fh);
+// thread funciton for receving param typecasted to (SOCKET)  
+extern DWORD WINAPI SOCKTH_receive(LPVOID socket_fh);
 
-extern DWORD WINAPI SOCKTH_send(SOCKET socket_fh);
+// thread funciton for sending param typecasted to (SOCKET) 
+extern DWORD WINAPI SOCKTH_send(LPVOID socket_fh);
 
 #endif
