@@ -62,7 +62,6 @@ int main(int argc, char* argv[]){
     fprintf(stdout, "Receiver threadID : %X\n", receiverThreadId);
     
 
-    WaitForSingleObject(senderThread, INFINITE);
     WaitForSingleObject(receiverThread, INFINITE);
 
     closesocket(socket_fh);

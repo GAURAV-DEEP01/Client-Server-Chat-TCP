@@ -8,7 +8,8 @@ void SOCK_FlCleanUp(char *err){
 
 DWORD WINAPI SOCKTH_receive(LPVOID socket_fh){
     char buffer[BUFFER_SIZE];
-    
+    char *exit_cmd = "leave";
+
     while(1){
         memset(buffer, 0, sizeof(buffer));
         size_t bytes_read;
@@ -16,11 +17,12 @@ DWORD WINAPI SOCKTH_receive(LPVOID socket_fh){
             SOCK_FlCleanUp("Unable to revieve data!");
             closesocket((SOCKET)socket_fh);
             return 0;
-        }else if(bytes_read == 0){
-            fprintf(stdout,"Connection closed by Client\n");
+        }else if((bytes_read == 0) || !strncmp(buffer, exit_cmd, strlen(exit_cmd))){
+            fprintf(stdout,"\nConnection closed End Of Chat\n");        
             closesocket((SOCKET)socket_fh);
-        }else
-            fprintf(stdout, "Client Message: %s\n",buffer);
+            return 0;
+        }
+        fprintf(stdout, "Client Message: %s\n",buffer);
     }
 }
 
