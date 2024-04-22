@@ -5,6 +5,7 @@
 #include<WinSock2.h>
 
 #define SERVER_ADDRESS "127.0.0.1"
+#define CLIENT_NAME "CLIENT"
 
 int main(int argc, char* argv[]){
     WORD WSA_vRequested = MAKEWORD(2,2);
@@ -38,12 +39,17 @@ int main(int argc, char* argv[]){
         closesocket(socket_fh);
         return 1;
     }
+    fprintf(stdout, "Connected...\n");
 
     // sending/receiving 
     HANDLE senderThread, receiverThread;
     DWORD senderThreadID, receiverThreadId;
     
-    senderThread = CreateThread(NULL, 0,(LPTHREAD_START_ROUTINE)SOCKTH_send, (LPVOID)socket_fh, 0, &senderThreadID);
+    SendRecvDescipt sendRecvDesc;
+    sendRecvDesc.sockfh = socket_fh;
+    strncpy(sendRecvDesc.application, CLIENT_NAME, strlen(CLIENT_NAME));
+
+    senderThread = CreateThread(NULL, 0,(LPTHREAD_START_ROUTINE)SOCKTH_send, (LPVOID)&sendRecvDesc, 0, &senderThreadID);
     if(senderThread == NULL){
         fprintf(stderr, "Sender thread Failed!\n");
         WSACleanup();
@@ -52,7 +58,7 @@ int main(int argc, char* argv[]){
     }
     fprintf(stdout, "Sender threadID : %X\n", senderThreadID);
 
-    receiverThread = CreateThread(NULL, 0 , (LPTHREAD_START_ROUTINE)SOCKTH_receive, (LPVOID)socket_fh, 0, &receiverThreadId);
+    receiverThread = CreateThread(NULL, 0 , (LPTHREAD_START_ROUTINE)SOCKTH_receive, (LPVOID)&sendRecvDesc, 0, &receiverThreadId);
     if(!receiverThread){
         fprintf(stderr, "Recevier thread Failed!\n");
         WSACleanup();
@@ -60,7 +66,7 @@ int main(int argc, char* argv[]){
         return 1;
     }
     fprintf(stdout, "Receiver threadID : %X\n", receiverThreadId);
-    
+    fprintf(stdout, "\n\t-Chat Here-\n");
 
     WaitForSingleObject(receiverThread, INFINITE);
 

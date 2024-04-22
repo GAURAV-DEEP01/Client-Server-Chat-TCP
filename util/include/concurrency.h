@@ -10,13 +10,18 @@
 
 // integrating...
 
+typedef struct{
+    SOCKET sockfh;
+    char application[10];
+}SendRecvDescipt;
+
 // socket error status & makes WSA cleanup 
 extern void SOCK_FlCleanUp(char* err);
 
-// thread funciton for receving param typecasted to (SOCKET)  
-extern DWORD WINAPI SOCKTH_receive(LPVOID socket_fh);
+// thread funciton for receving, param changed to senderReceverDescription  
+extern DWORD WINAPI SOCKTH_receive(SendRecvDescipt *sendRecvDesc);
 
-// thread funciton for sending param typecasted to (SOCKET) 
-extern DWORD WINAPI SOCKTH_send(LPVOID socket_fh);
+// thread funciton for sending, param changed to senderReceverDescription
+extern DWORD WINAPI SOCKTH_send(SendRecvDescipt *sendRecvDesc);
 
 #endif

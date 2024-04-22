@@ -4,6 +4,7 @@
 #include<WinSock2.h>
 
 #define SERVER_ADDRESS "127.0.0.1"
+#define SERVER_NAME "SERVER"
 #define BUFFER_SIZE 1000
 
 
@@ -51,7 +52,7 @@ int main(int argc, char* argv[]){
         closesocket(socket_fh);
         return 1;
     }
-    fprintf(stdout, "Listen to client on port '%hd'successfully...\n",port_no); 
+    fprintf(stdout, "Listen to client on port '%hd'...\n",port_no); 
 
     // accept 
     int server_len = sizeof(server);
@@ -62,10 +63,15 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
+    // sender / receiver
     HANDLE senderThread, receiverThread;
     DWORD senderThreadID, receiverThreadId;
 
-    senderThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SOCKTH_send, (LPVOID)new_socket_fh, 0, &senderThreadID);
+    SendRecvDescipt sendRecvDesc;
+    sendRecvDesc.sockfh = new_socket_fh;
+    strncpy(sendRecvDesc.application, SERVER_NAME, strlen(SERVER_NAME));
+
+    senderThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SOCKTH_send, (LPVOID)&sendRecvDesc, 0, &senderThreadID);
     if(!senderThread){
         fprintf(stderr, "Sender thread Failed!\n");
         WSACleanup();
@@ -74,7 +80,7 @@ int main(int argc, char* argv[]){
     }
     fprintf(stdout, "Sender threadID : %X\n", senderThreadID);
 
-    receiverThread = CreateThread(NULL, 0 , (LPTHREAD_START_ROUTINE)SOCKTH_receive, (LPVOID)new_socket_fh, 0, &receiverThreadId);
+    receiverThread = CreateThread(NULL, 0 , (LPTHREAD_START_ROUTINE)SOCKTH_receive, (LPVOID)&sendRecvDesc, 0, &receiverThreadId);
     if(!receiverThread){
         fprintf(stderr, "Receiver thread Failed!\n");
         WSACleanup();
@@ -82,7 +88,8 @@ int main(int argc, char* argv[]){
         return 1;
     }
     fprintf(stdout, "Receiver threadID : %X\n", receiverThreadId);
-    
+    fprintf(stdout, "\n\t-Chat Here-\n");
+
     WaitForSingleObject(receiverThread, INFINITE);
 
     closesocket(socket_fh);
