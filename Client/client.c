@@ -1,4 +1,6 @@
 #include "../util/include/concurrency.h"
+#include "../util/include/ipPortParser.h"
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<Windows.h>
@@ -7,11 +9,17 @@
 #define SERVER_ADDRESS "127.0.0.1"
 #define CLIENT_NAME "CLIENT"
 
+
 int main(int argc, char* argv[]){
+    IpPort ipPort;
     WORD WSA_vRequested = MAKEWORD(2,2);
     WSADATA WSAData;
-    short port_no = 9090;
     
+    if(SOCK_HandleArgs(argc, argv, &ipPort) == ARG_ERROR){
+        fprintf(stderr,"Invalid arguments!\n");
+        return 1;
+    }
+
     if(WSAStartup(WSA_vRequested,&WSAData) != 0){
         SOCK_FlCleanUp("WSA Startup failed");
         return 1;
@@ -31,8 +39,8 @@ int main(int argc, char* argv[]){
     // setting up port, AF and addr
     struct sockaddr_in server;
     server.sin_family = AF_INET;
-    server.sin_port = htons(port_no);
-    server.sin_addr.S_un.S_addr = inet_addr(SERVER_ADDRESS);
+    server.sin_port = htons(ipPort.port);
+    server.sin_addr.S_un.S_addr = inet_addr(ipPort.ip);
 
     if(connect(socket_fh, (struct sockaddr*)&server, sizeof(server)) < 0){
         SOCK_FlCleanUp("Unable to connect!");

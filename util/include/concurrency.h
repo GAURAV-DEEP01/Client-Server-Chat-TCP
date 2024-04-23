@@ -8,8 +8,6 @@
 
 #define BUFFER_SIZE 1000
 
-// integrating...
-
 typedef struct{
     SOCKET sockfh;
     char application[10];

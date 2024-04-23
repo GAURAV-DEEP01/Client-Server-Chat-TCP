@@ -5,7 +5,7 @@ SRC = util/src/
 all: client server
 
 client: Client/client.c
-	$(GXX) -o exe/client Client/client.c $(SRC)concurrency.c -l $(SOCKET) 
+	$(GXX) -o exe/client Client/client.c $(SRC)concurrency.c $(SRC)ipPortParser.c -l $(SOCKET) 
 
 server: Server/server.c
-	$(GXX) -o exe/server Server/server.c $(SRC)concurrency.c -l $(SOCKET)
+	$(GXX) -o exe/server Server/server.c $(SRC)concurrency.c $(SRC)ipPortParser.c -l $(SOCKET)

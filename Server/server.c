@@ -3,15 +3,16 @@
 #include<stdlib.h>
 #include<WinSock2.h>
 
-#define SERVER_ADDRESS "127.0.0.1"
+// Any intereface
+#define SERVER_ADDRESS " "
 #define SERVER_NAME "SERVER"
 #define BUFFER_SIZE 1000
-
+#define DEFAULT_PORT 9090
 
 int main(int argc, char* argv[]){
     WORD WSA_vRequested = MAKEWORD(2,2);
     WSADATA WSAData;
-    short port_no = 9090;
+    short port_no = argc > 1 ? atoi(argv[1]) : DEFAULT_PORT;
 
     // startup 
     if(WSAStartup(WSA_vRequested,&WSAData) != 0){
