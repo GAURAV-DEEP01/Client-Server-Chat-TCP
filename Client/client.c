@@ -1,12 +1,6 @@
 #include "../util/include/concurrency.h"
 #include "../util/include/ipPortParser.h"
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<Windows.h>
-#include<WinSock2.h>
-
-#define SERVER_ADDRESS "127.0.0.1"
 #define CLIENT_NAME "CLIENT"
 
 

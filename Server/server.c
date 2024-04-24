@@ -5,9 +5,9 @@
 
 // Any intereface
 #define SERVER_ADDRESS " "
-#define SERVER_NAME "SERVER"
-#define BUFFER_SIZE 1000
 #define DEFAULT_PORT 9090
+
+#define SERVER_NAME "SERVER"
 
 int main(int argc, char* argv[]){
     WORD WSA_vRequested = MAKEWORD(2,2);
