@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
     
     SendRecvDescipt sendRecvDesc;
     sendRecvDesc.sockfh = socket_fh;
-    strncpy(sendRecvDesc.application, CLIENT_NAME, strlen(CLIENT_NAME));
+    strcpy(sendRecvDesc.application, CLIENT_NAME);
 
     senderThread = CreateThread(NULL, 0,(LPTHREAD_START_ROUTINE)SOCKTH_send, (LPVOID)&sendRecvDesc, 0, &senderThreadID);
     if(senderThread == NULL){

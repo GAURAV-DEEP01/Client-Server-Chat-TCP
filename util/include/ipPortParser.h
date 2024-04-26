@@ -25,10 +25,10 @@ extern Argstatus SOCK_IpPortParse(char *ipPortString, IpPort *ipPort);
 
 /* handles user arguments 
 types
-loopback : just to be explicit
-    ./client loopback 
 default : default with not arguments is loopback address with 9090 port 
     ./client 
+loopback with port : to connect to a specific port
+    ./client loopback 6060 
 Ip and port : pass the ip and port as arguments to connect to custom socket 
     ./client 192.168.29.64:5050
 */
