@@ -26,7 +26,11 @@ server <port number>
 ![server cmd](assets/image.png) 
 
 
-4. Open another command prompt and run the client.exe file 
+4. Open command prompt once more on the same or another device and run the client.exe file 
+
+``
+Note : If same device use default or loopback connection
+``
 
 use commands : 
 
@@ -46,8 +50,12 @@ client loopback <port number>
 
 or
 
+``
+Note : Use this if you want to communicate with another device in the same LAN connection 
+``
+
 ```cmd 
-client <ip address>:<port number>
+client <server ip address>:<port number server is listening>
 ```
 ![custom socket](assets/image-2.png)
 
