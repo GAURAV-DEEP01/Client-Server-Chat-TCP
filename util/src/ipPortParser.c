@@ -8,9 +8,12 @@ Argstatus SOCK_IpPortParse(char *ipPortString, IpPort *ipPort){
         return ARG_ERROR; 
 
     int lenfrmsep = strlen(seperator); 
+    memset(ipPort->ip, 0, sizeof(ipPort->ip));
+    
     strncpy(ipPort->ip,ipPortString, strlen(ipPortString) - lenfrmsep);
-    memset(&ipPort->ip[strlen(ipPortString) - lenfrmsep],0,sizeof(ipPort));
+
     printf("ip is : %s\nport is %d\n",ipPort->ip, ipPort->port );
+
     return IP_SOCKET;
 }
 
